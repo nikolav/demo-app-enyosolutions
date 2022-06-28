@@ -8,6 +8,7 @@ const { client } = require("../src/mysq-connection");
 router.get("/", function (req, res, next) {
   res.json({
     "app.name": "demo:enyosolutions",
+    "api.github": "https://github.com/nikolav/demo-app-enyosolutions"
   });
 });
 //
