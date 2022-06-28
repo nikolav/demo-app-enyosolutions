@@ -9,3 +9,6 @@
 ## run tests
 
 `$ yarn run test`
+
+## setup database
+  run `/src/schema.sql`

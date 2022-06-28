@@ -3,10 +3,6 @@ var router = express.Router();
 const { client } = require("../src/mysq-connection");
 
 //
-const axios = require("axios");
-const qs = require("qs");
-
-//
 // api welcome response
 // POST /api
 router.post("/", function (req, res, next) {
@@ -16,7 +12,7 @@ router.post("/", function (req, res, next) {
     ...req.body,
   });
 });
-
+//
 /////////////////////////////
 /////////// TESTS ///////////
 /////////////////////////////
@@ -46,8 +42,12 @@ router.get("/test/tables", (req, res) => {
     }
   );
 });
+//
+/////////////////////////////////////////
+/////////// ARTICLES RESOURCE ///////////
+/////////////////////////////////////////
 
-//////
-//////
+
+
 //
 module.exports = router;

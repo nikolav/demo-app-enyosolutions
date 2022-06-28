@@ -3,7 +3,10 @@ const qs = require("qs");
 const { isNumeric } = require("../src/util");
 
 //
-const API_URL = "http://localhost:3031/api";
+const API_URL_DEV        = "http://localhost:3031/api";
+const API_URL_PRODUCTION = "http://localhost:3031/api";
+//
+const API_URL = API_URL_DEV;
 
 //
 //

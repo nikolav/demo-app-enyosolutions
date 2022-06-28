@@ -1,7 +1,6 @@
-
-
 const { client } = require("./src/mysq-connection");
 
+//
 client.connect(error => {
     if (error)
       throw error;
