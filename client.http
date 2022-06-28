@@ -2,10 +2,12 @@
 
 ###
 
+
 http://localhost:3031/api
 Accept: application/json
 
 ###
+
 
 POST http://localhost:3031/api/test
 Accept: application/json
@@ -17,8 +19,29 @@ Content-Type: application/json
 
 ###
 
+
 http://localhost:3031/api/test/tables
 Accept: application/json
 
+
+###
+
+
+POST http://localhost:3031/api/articles/import/?siteRssUrl=https://www.lemonde.fr/rss/une.xml
+Accept: application/json
+
+###
+
+POST http://localhost:3031/api/articles/import/?siteRssUrl=https://www.theguardian.com/world/europe-news/rss
+Accept: application/json
+
+###
+
+
+http://localhost:3031/api/articles
+
+###
+
+http://localhost:3031/api/test/feeds
 
 ###

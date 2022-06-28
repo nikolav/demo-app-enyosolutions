@@ -3,7 +3,7 @@ const qs = require("qs");
 const { isNumeric } = require("../src/util");
 
 //
-const API_URL_DEV        = "http://localhost:3031/api";
+const API_URL_DEV = "http://localhost:3031/api";
 const API_URL_PRODUCTION = "https://demo-enyosolutions.herokuapp.com/api";
 //
 const API_URL = API_URL_DEV;
@@ -12,27 +12,24 @@ const API_URL = API_URL_DEV;
 //
 //
 //
-describe("init", () => {
+describe("api inits", () => {
   //
   // run empty test, verify app runs
   it("backend boots", () => {});
   //
-  // send dummy data to see if server got it
+  // fetch dummy data to see if server got it
   it(`/api endpoint boots [${API_URL}]`, (done) => {
-    axios({
-      method: "get",
-      url: API_URL,
-    })
+    axios(API_URL)
       .then(({ data }) => {
-        // all good, test success
         expect(data["app.name"]).toBe("demo:enyosolutions");
+        // all good, test success
         done();
       })
       .catch((error) => done({ error }));
   });
   //
   // test db connection
-  // send dummy query to see if db boots
+  // fetch dummy data to see if db is on
   it("mysql boots", (done) => {
     const testData = "TEST-DATA-2";
     axios({
@@ -44,22 +41,36 @@ describe("init", () => {
     })
       .then(({ data }) => {
         expect(data.test).toBe(testData);
+        // db query run ok
         done();
       })
       .catch((error) => done({ error }));
   });
   //
   // test if tables are there
-  // count records to see if totals get returned
+  // fetch record totals to see if they get returned
   it("tables [imports, articles] available", (done) => {
     axios({
       method: "get",
       url: `${API_URL}/test/tables`,
     })
       .then(({ data }) => {
+        expect([data.totalArticles, data.totalImports].every(isNumeric)).toBe(
+          true
+        );
+        done();
+      })
+      .catch((error) => done({ error }));
+  });
+  //
+  // verify news feeds are live
+  it("news feeds are available", (done) => {
+    axios(`${API_URL}/test/feeds`)
+      .then(({ data }) => {
         expect(
-          [data.totalArticles, data.totalImports].every(isNumeric)
+          data.feeds.every((feed) => null != feed && 0 < String(feed).length)
         ).toBe(true);
+        // reading feeds ok, signal ok
         done();
       })
       .catch((error) => done({ error }));
