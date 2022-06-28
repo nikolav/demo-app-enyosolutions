@@ -1,9 +1,13 @@
-
 # welcome, demo-app
-  https://demo-enyosolutions.herokuapp.com/api
-  https://demo-enyosolutions.herokuapp.com/
+
+https://demo-enyosolutions.herokuapp.com/api
+https://demo-enyosolutions.herokuapp.com/
 
 [![NextJS](apitests.jpg)](https://demo-enyosolutions.herokuapp.com/api)
+
+## install packages
+
+`$ yarn install`
 
 ## run dev server
 
@@ -14,4 +18,5 @@
 `$ yarn run test`
 
 ## setup database
-  run `/src/schema.sql`
+
+run `/src/schema.sql`
