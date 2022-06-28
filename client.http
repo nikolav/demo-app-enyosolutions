@@ -1,0 +1,24 @@
+
+
+###
+
+POST http://localhost:3031/api
+Accept: application/json
+
+###
+
+POST http://localhost:3031/api/test
+Accept: application/json
+Content-Type: application/json
+
+{
+    "test": "SEND-TESTS-HERE-TO-TEST-DB"
+}
+
+###
+
+http://localhost:3031/api/test/tables
+Accept: application/json
+
+
+###
