@@ -5,11 +5,9 @@ const { client } = require("../src/mysq-connection");
 //
 // api welcome response
 // POST /api
-router.post("/", function (req, res, next) {
+router.get("/", function (req, res, next) {
   res.json({
-    "app.version": "demo:0.0.0",
     "app.name": "demo:enyosolutions",
-    ...req.body,
   });
 });
 //
@@ -46,8 +44,6 @@ router.get("/test/tables", (req, res) => {
 /////////////////////////////////////////
 /////////// ARTICLES RESOURCE ///////////
 /////////////////////////////////////////
-
-
 
 //
 module.exports = router;

@@ -1,6 +1,7 @@
 
-# welcome, demo-app@nikolav.rs
-  https://github.com/nikolav/demo-app-enyosolutions.git
+# welcome, demo-app
+  https://demo-enyosolutions.herokuapp.com/api
+  https://demo-enyosolutions.herokuapp.com/
 
 ## run dev server
 

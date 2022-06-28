@@ -4,9 +4,10 @@ const { isNumeric } = require("../src/util");
 
 //
 const API_URL_DEV        = "http://localhost:3031/api";
-const API_URL_PRODUCTION = "http://localhost:3031/api";
+const API_URL_PRODUCTION = "https://demo-enyosolutions.herokuapp.com/api";
 //
 const API_URL = API_URL_DEV;
+// const API_URL = API_URL_PRODUCTION;
 
 //
 //
@@ -18,17 +19,13 @@ describe("init", () => {
   //
   // send dummy data to see if server got it
   it(`/api endpoint boots [${API_URL}]`, (done) => {
-    const testData = "TEST-DATA-1";
     axios({
-      method: "post",
+      method: "get",
       url: API_URL,
-      data: qs.stringify({
-        test: testData,
-      }),
     })
       .then(({ data }) => {
         // all good, test success
-        expect(data.test).toBe(testData);
+        expect(data["app.name"]).toBe("demo:enyosolutions");
         done();
       })
       .catch((error) => done({ error }));

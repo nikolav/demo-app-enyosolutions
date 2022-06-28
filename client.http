@@ -2,7 +2,7 @@
 
 ###
 
-POST http://localhost:3031/api
+http://localhost:3031/api
 Accept: application/json
 
 ###
