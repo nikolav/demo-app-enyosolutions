@@ -1,9 +1,13 @@
 # welcome, demo-app
 
-https://demo-enyosolutions.herokuapp.com/api
-https://demo-enyosolutions.herokuapp.com/
+-- https://demo-enyosolutions.herokuapp.com/api
 
 [![NextJS](apitests.jpg)](https://demo-enyosolutions.herokuapp.com/api)
+
+## api
+  
+  -- `GET   /api/articles                     # read posts`
+  -- `POST  /api/articles/import/?siteRssUrl  # fetch new posts`
 
 ## install packages
 
@@ -20,3 +24,6 @@ https://demo-enyosolutions.herokuapp.com/
 ## setup database
 
 run `/src/schema.sql`
+
+## demo app 
+  https://demo-app-enyosolutions.herokuapp.com/
