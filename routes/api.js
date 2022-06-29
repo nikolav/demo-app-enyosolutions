@@ -16,6 +16,8 @@ const FEEDS = [
   "https://www.lemonde.fr/rss/une.xml",
   "https://www.theguardian.com/world/europe-news/rss",
 ];
+const RSS_IMAGE_PLACEHOLDER =
+  "https://icons.iconarchive.com/icons/bokehlicia/pacifica/256/rss-news-reader-icon.png";
 
 //
 // api about
@@ -75,59 +77,103 @@ router.get("/test/feeds", (_req, res) => {
 // read all articles; +longest-word-by-vowel-count
 // GET /api/articles
 router.get("/articles", (_req, res) => {
-  client.query(`select * from articles`, (error, articles, _cols) => {
-    if (error) throw error;
-    //
-    res.json({
-      articles: articles.map((article) => {
-        // make groups with the same vowel count
-        // store words accordingly
-        //   {[key: number]: string[]}
-        const groupByVowelCount = article.title
-          .split(/\s+/)
-          .reduce((w, word) => {
-            const vcWord = vowelCount(word);
-            if (has(w, vcWord)) {
-              w[vcWord].push(word);
-            } else {
-              w[vcWord] = [word];
-            }
-            //
-            return w;
-          }, {});
+  client.query(
+    `
+    select * from articles 
+    order by 
+      id desc
+    limit
+      122
+  `,
+    (error, articles, _cols) => {
+      if (error) throw error;
+      //
+      res.json({
+        articles: articles.map((article) => {
+          // make groups with the same vowel count
+          // store words accordingly
+          //   {[key: number]: string[]}
+          const groupByVowelCount = article.title
+            .split(/\s+/)
+            .reduce((w, word) => {
+              const vcWord = vowelCount(word);
+              if (has(w, vcWord)) {
+                w[vcWord].push(word);
+              } else {
+                w[vcWord] = [word];
+              }
+              //
+              return w;
+            }, {});
 
-        return {
-          // take longest word in a group with max vowel count
-          "word-with-the-most-vowels-in-the-title": longestString(
-            groupByVowelCount[Math.max(...Object.keys(groupByVowelCount))]
-          ),
-          ...article,
-        };
-      }),
-    });
-  });
+          return {
+            // take longest word in a group with max vowel count
+            "word-with-the-most-vowels-in-the-title": longestString(
+              groupByVowelCount[Math.max(...Object.keys(groupByVowelCount))]
+            ),
+            ...article,
+          };
+        }),
+      });
+    }
+  );
 });
 //
 // load articles
 // POST /api/articles/import/?siteRssUrl
 router.post("/articles/import", (req, res) => {
   const { siteRssUrl: feed } = req.query;
-  if (!feed) return res.json(null);
-  // fetch feed
-  axios(feed).then(({ data }) => {
-    // @xml2js
-    // https://github.com/Leonidas-from-XIV/node-xml2js
-    parseXmlString(data, (error, feed) => {
-      if (error) throw error;
-      // save articles
-      feed.rss.channel[0].item.forEach(articleSave);
-      // save raw rss json
-      importsSave(JSON.stringify(feed));
-      // data saved, signal success
-      res.json({ status: 1 });
-    });
-    //
-  });
+  //
+  if (!feed) {
+    return Promise.all(FEEDS.map((rssUrl) => axios(rssUrl))).then(
+      (resFeeds) => {
+        _map(resFeeds, "data").forEach((data) => {
+          // @xml2js
+          // https://github.com/Leonidas-from-XIV/node-xml2js
+          parseXmlString(data, (_error, feed) => {
+            // g2g, no errors here
+            // loading valid resource
+            // if (error) {
+            //   // loading invalid rss failed
+            //   // ignore, signal error
+            //   // return res.json({ error });
+            // }
+            //
+            // save/update articles
+            // save raw rss json
+            feed.rss.channel[0].item.forEach(articleSave);
+            importsSave(JSON.stringify(feed));
+          });
+        });
+        //
+        res.json({ error: 0 });
+      }
+    );
+  }
+  //
+  // load provided feed url
+  axios(feed)
+    .then(({ data }) => {
+      parseXmlString(data, (error, feed) => {
+        if (error) {
+          // loading invalid rss failed
+          // ignore
+          // signal error
+          return res.json({ error });
+        }
+        //
+        // rss parsed
+        // save/update articles
+        // save raw rss json
+        feed.rss.channel[0].item.forEach(articleSave);
+        importsSave(JSON.stringify(feed));
+        //
+        // data saved, signal success
+        res.json({ error: 0 });
+      });
+      //
+    })
+    .catch((error) => res.json({ error }));
   //
 });
 //
@@ -138,7 +184,14 @@ module.exports = router;
 function articleSave(article) {
   const { title, link, description, pubDate: publicationDate } = article;
   const externalId = getGuid(article);
-  const mainPicture = article["media:content"][0]["$"].url;
+  //
+  let mainPicture = RSS_IMAGE_PLACEHOLDER;
+  try {
+    mainPicture = article["media:content"][0]["$"].url;
+  } catch {
+    // ignore, use placeholder
+  }
+
   //
   client.query(
     `
