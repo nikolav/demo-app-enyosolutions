@@ -3,12 +3,13 @@ var router = express.Router();
 const axios = require("axios");
 const { client } = require("../src/mysq-connection");
 const {
-  has,
+  _map,
+  groupBy,
   isString,
   longestString,
-  _map,
   mysqlDate,
   parseXmlString,
+  splitWords,
   vowelCount,
 } = require("../src/util");
 //
@@ -90,26 +91,10 @@ router.get("/articles", (_req, res) => {
       //
       res.json({
         articles: articles.map((article) => {
-          // make groups with the same vowel count
-          // store words accordingly
-          //   {[key: number]: string[]}
-          const groupByVowelCount = article.title
-            .split(/\s+/)
-            .reduce((w, word) => {
-              const vcWord = vowelCount(word);
-              if (has(w, vcWord)) {
-                w[vcWord].push(word);
-              } else {
-                w[vcWord] = [word];
-              }
-              //
-              return w;
-            }, {});
-
+          const g = groupBy(splitWords(article.title), vowelCount);
           return {
-            // take longest word in a group with max vowel count
-            "word-with-the-most-vowels-in-the-title": longestString(
-              groupByVowelCount[Math.max(...Object.keys(groupByVowelCount))]
+            "WORD-WITH-THE-MOST-VOWELS-IN-THE-TITLE": longestString(
+              g[Math.max(...Object.keys(g))]
             ),
             ...article,
           };
