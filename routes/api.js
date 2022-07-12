@@ -91,10 +91,11 @@ router.get("/articles", (_req, res) => {
       //
       res.json({
         articles: articles.map((article) => {
-          const g = groupBy(splitWords(article.title), vowelCount);
           return {
-            "WORD-WITH-THE-MOST-VOWELS-IN-THE-TITLE": longestString(
-              g[Math.max(...Object.keys(g))]
+            wordwiththemostvowelsinthetitle: longestString(
+              ((g) => g[Math.max(...Object.keys(g))])(
+                groupBy(splitWords(article.title), vowelCount)
+              )
             ),
             ...article,
           };
